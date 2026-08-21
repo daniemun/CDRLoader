@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 project(
   CDRCompatLoader
-  VERSION 0.1
+  VERSION 0.2
   DESCRIPTION "Plugin that loads CheatDevice Remastered ONLY when you start GTA LCS / VCS."
   HOMEPAGE_URL "http://cheatdeviceremastered.com"
   LANGUAGES C
@@ -33,7 +33,9 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   -Os
   -fno-pic
   -G0
+  -mtune=mips32r2
 
+  -Werror
   -Wall
   -Wextra
   -Wpedantic
@@ -50,7 +52,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_options(${PROJECT_NAME} PRIVATE
   -specs=${PSPDEV}/psp/sdk/lib/prxspecs
-  -L
   -Wl,-zmax-page-size=128
   -flto
 )

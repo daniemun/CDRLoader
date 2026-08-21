@@ -15,11 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <pspmoduleinfo.h>
-#include <pspkernel.h>
-#include <systemctrl.h>
-#include <pspsysmem_kernel.h>
 #include <string.h>
+#include <pspuser.h>
+#include <psploadcore.h>
 #include <kubridge.h>
 #include "versioning.h"
 
@@ -38,30 +36,28 @@ PSP_MAIN_THREAD_ATTR(0);
 /* Lowest address in which we could detect that some sort of High Memory Layout is being used */
 #define LOWEST_ADDR_HIGH_MEM_LAYOUT 0x0AC00000
 
-static int _main(SceSize args, void *argp)
+static int _main(SceSize args __attribute__((unused)), void *argp)
 {
-  (void)args;
-
   /* Wait until GTA is loaded...
    * If in 5 tries (5 sec), 'GTA3' module wasn't found
-   * most likely we aren't playing GTA so we're unloading :D */
-  int tries = 0;
+   * most likely we aren't playing GTA so we're unloading */
+  unsigned int tries = 0;
   SceModule gta3Module = {0};
   while( kuKernelFindModuleByName("GTA3", &gta3Module) < 0 || !gta3Module.text_addr )
   {
     if ( tries == 5 ) goto UNLOAD;
-    sceKernelDelayThread(1000 * 1000); /* 1 sec */
+    sceKernelDelayThread(1 * 1000 * 1000); /* 1 sec */
     tries++;
   }
 
   const char *plugin_filename;
 
-  /* Load lite / full version depending on memory available            */
+  /* Load lite / full version depending on memory available */
   const SceUID high_addr_block = sceKernelAllocPartitionMemory(PSP_MEMORY_PARTITION_USER, "", PSP_SMEM_High, 0x100, NULL);
   if ( high_addr_block < 0 ) goto UNLOAD;
 
   /* Highest address is not calculated precisely this way but it gives a rough idea */
-  const int highest_addr = (int)sceKernelGetBlockHeadAddr(high_addr_block) + 0x100;
+  const uintptr_t highest_addr = (uintptr_t)sceKernelGetBlockHeadAddr(high_addr_block) + 0x100;
   sceKernelFreePartitionMemory(high_addr_block);
 
   /* Higher highest addr -> Load Full version */
@@ -80,7 +76,7 @@ static int _main(SceSize args, void *argp)
   strcpy(full_path + (slash - directory), plugin_filename);
 
   /* Load module options */
-  const SceKernelLMOption CDR_module_options =
+  SceKernelLMOption CDR_module_options =
   {
     .size     = sizeof(SceKernelLMOption),
     .mpidtext = PSP_MEMORY_PARTITION_USER,
@@ -90,7 +86,7 @@ static int _main(SceSize args, void *argp)
   };
 
   /* Load and start CheatDevice */
-  SceUID modid = kuKernelLoadModule(full_path, 0, (SceKernelLMOption *)&CDR_module_options);
+  const SceUID modid = kuKernelLoadModule(full_path, 0, &CDR_module_options);
   if ( modid >= 0 ) sceKernelStartModule(modid, 0, NULL, NULL, NULL);
 
   /* Unload this module after all work */
@@ -103,7 +99,7 @@ static int _main(SceSize args, void *argp)
 int module_start(SceSize args, void *argp)
 {
   /* Create and start main thread */
-  SceUID thid = sceKernelCreateThread("CDRLoaderThread", _main, 32, 0x1000, 0, 0);
+  SceUID thid = sceKernelCreateThread("CDRCompatLoader", _main, 32, 0x1000, 0, 0);
   if ( thid < 0 ) return 1;
 
   sceKernelStartThread(thid, args, argp);
