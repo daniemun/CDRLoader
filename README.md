@@ -9,9 +9,9 @@ Plugin that loads [CheatDevice Remastered](https://github.com/Freakler/CheatDevi
 This plugin was made for some CFWs, like:
  - ***PRO-C2***
  - ***(L)ME 2.3***
- - ***Older releases of Adrenaline (PSVita)***
+ - ***Adrenaline v7 or earlier (PSVita)***
 
-which, unlike ***ARK-4*** and ***ARK-5***, don't have *per-game* plugins.
+which, unlike ***ARK-4***, ***ARK-5*** and ***Adrenaline v8+ (PSVita)***, don't have *per-game* plugins.
 
 The problem with them is, if you have CheatDevice Remastered enabled and try to play a different game, most likely, the game will crash / have problems. That is because CheatDevice is a big plugin and clogs up a high amount of memory which games need (even if CDR isn't being used!)
 
@@ -30,7 +30,7 @@ CheatDevice Remastered Lite will be loaded if:
 
 ## Installation
 > [!WARNING]
-> Do not use this with ***PPSSPP***, ***ARK-4*** or ***ARK-5***. Those have per-game plugins and do not need this plugin at all.
+> Do not use this with ***PPSSPP***, ***ARK-4***, ***ARK-5*** or ***Adrenaline v8+ (PSVita)***. Those have per-game plugins and do not need this plugin at all.
 
 0. Install CheatDevice Remastered (see [here](https://github.com/Freakler/CheatDeviceRemastered/blob/main/README.md#installation) how)
 
