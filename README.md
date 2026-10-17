@@ -1,7 +1,7 @@
 # CheatDevice Remastered Loader
 
-> [!WARNING]
-> **WIP UNTESTED**
+> [!IMPORTANT]
+> This project was migrated to [Codeberg](https://codeberg.org/daniemun/CDRLoader). Further development will continue there.
 
 Plugin that loads [CheatDevice Remastered](https://github.com/Freakler/CheatDeviceRemastered) ONLY when you start GTA LCS / VCS.
 
